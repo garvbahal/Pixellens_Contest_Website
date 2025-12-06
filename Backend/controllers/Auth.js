@@ -155,3 +155,60 @@ exports.memberSignUp = async (req, res) => {
         });
     }
 };
+
+// login
+exports.login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(404).json({
+                success: false,
+                message: "All fields are requierd!!",
+            });
+        }
+
+        const userDetails = await User.findOne({ email });
+        if (!userDetails) {
+            return res.status(400).json({
+                success: false,
+                message: "User not registered, please signup first!!",
+            });
+        }
+
+        if (await bcrypt.compare(password, userDetails.passwordHashed)) {
+            const payload = {
+                id: userDetails._id,
+                role: userDetails.role,
+            };
+            const jwtToken = jwt.sign(payload, process.env.JWT_SECRET, {
+                expiresIn: "7d",
+            });
+
+            const options = {
+                expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                httpOnly: true,
+            };
+
+            userDetails.passwordHashed = undefined;
+            userDetails.token = jwtToken;
+            res.cookie("token", jwtToken, options).status(200).json({
+                success: true,
+                message: "Logged in successfully!!",
+                userDetails,
+                jwtToken,
+            });
+        } else {
+            return res.status(401).json({
+                success: false,
+                message: "Password is incorrect!!",
+            });
+        }
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong while logging up!!",
+            error: error.message,
+        });
+    }
+};
