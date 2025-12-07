@@ -9,28 +9,7 @@ const NotificationSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-
-    target: {
-        type: String,
-        enum: ["all", "team", "user"],
-        default: "all",
-    },
-
-    team: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Team",
-    },
-
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-    },
-
-    isEmailSent: {
-        type: Boolean,
-        default: false,
-    },
-    createdAt: {
+    sendAt: {
         type: Date,
         default: Date.now,
     },
