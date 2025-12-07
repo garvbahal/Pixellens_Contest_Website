@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Notification = require("../models/Notification");
 const Team = require("../models/Team");
 const Brochure = require("../models/Brochure");
+const sendMail = require("../utils/sendMail");
 
 exports.getAllTeams = async (req, res) => {
     try {

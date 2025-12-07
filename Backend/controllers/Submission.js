@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Team = require("../models/Team");
+const sendMail = require("../utils/sendMail");
 
 exports.getTeamDetails = async (req, res) => {
     try {
@@ -11,7 +12,6 @@ exports.getTeamDetails = async (req, res) => {
 
         const team = await Team.findById(teamId)
             .populate("members", "name email")
-            .populate("leader", "name email")
             .exec();
 
         if (!team) {
