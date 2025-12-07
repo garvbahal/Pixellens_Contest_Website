@@ -150,3 +150,42 @@ exports.sendNotification = async (req, res) => {
         });
     }
 };
+
+exports.uploadOrUpdateBrochure = async (req, res) => {
+    try {
+        const { link } = req.body;
+
+        if (!link) {
+            return res.status(400).json({
+                success: false,
+                message: "Link is required",
+            });
+        }
+
+        let brochure = await Brochure.findOne();
+
+        if (brochure) {
+            brochure.pdfUrl = link;
+            brochure.uploadedAt = Date.now();
+            await brochure.save();
+            return res.status(200).json({
+                success: true,
+                message: "Brochure updated",
+                brochure,
+            });
+        }
+
+        brochure = await Brochure.create({ pdfUrl: link });
+        return res.status(200).json({
+            success: true,
+            message: "Brochure uploaded successfully",
+            brochure,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong while uploading brochure",
+            error: error.message,
+        });
+    }
+};
