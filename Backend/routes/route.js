@@ -14,6 +14,8 @@ const {
     uploadOrUpdateBrochure,
 } = require("../controllers/Admin");
 
+const { getAllNotifications, getBrochure } = require("../controllers/Home");
+
 // Auth Routes
 router.post("/signup/leader", signUpLeader);
 router.post("/signup/member", memberSignUp);
@@ -35,5 +37,9 @@ router.delete(
 );
 router.post("/admin/notification", auth, isAdmin, sendNotification);
 router.post("/admin/brochure", auth, isAdmin, uploadOrUpdateBrochure);
+
+// Home routes
+router.get("/getnotifications", getAllNotifications);
+router.get("/brochure", getBrochure);
 
 module.exports = router;
